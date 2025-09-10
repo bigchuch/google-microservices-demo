@@ -93,5 +93,5 @@ jobs:
           push: true
           tags: docker.io/bigchuch/google-microservices:${{ matrix.tag }}
       
-      - name: Echo pull URL
-        run: echo "Pushed: docker.io/bigchuch/google-microservices:${{ matrix.tag }}"
+      #- name: Echo pull URL
+      #  run: echo "Pushed: docker.io/bigchuch/google-microservices:${{ matrix.tag }}"
