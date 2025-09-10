@@ -2,7 +2,7 @@ name: Docker Build And Push To Docker Hub
 
 on:
   push:
-    branch: [ main ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - service: adservice
@@ -89,4 +90,4 @@ jobs:
           context: ${{ matrix.context }}
 
       - name: Echo push URL
-        run: echo "Pushed: ${{ steps.buildAndPushImage.outputs.image_pull_url }}"
+        run: echo "Pushed:${{ steps.buildAndPushImage.outputs.image_pull_url }}"
