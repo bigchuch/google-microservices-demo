@@ -1,0 +1,92 @@
+name: Docker Build And Push To Docker Hub
+
+on:
+  push:
+    branch: [ main ]
+
+jobs:
+  build:
+    name: Build & Push multiple service images
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - service: adservice
+            context: ./src/adservice
+            dockerfile: ./src/adservice/Dockerfile
+            tag: adservice-v1
+            
+          - service: cartservice
+            context: ./src/cartservice/src
+            dockerfile: ./src/cartservice/src/Dockerfile
+            tag: cartservice-v1
+            
+          - service: checkoutservice
+            context: ./src/checkoutservice
+            dockerfile: ./src/checkoutservice/Dockerfile
+            tag: checkoutservice-v1
+
+          - service: currencyservice
+            context: ./src/currencyservice
+            dockerfile: ./src/currencyservice/Dockerfile
+            tag: currencyservice-v1
+
+          - service: emailservice
+            context: ./src/emailservice
+            dockerfile: ./src/emailservice/Dockerfile
+            tag: emailservice-v1
+
+          - service: frontend
+            context: ./src/frontend
+            dockerfile: ./src/frontend/Dockerfile
+            tag: frontend-v1
+
+          - service: loadgenerator
+            context: ./src/loadgenerator
+            dockerfile: ./src/loadgenerator/Dockerfile
+            tag: loadgenerator-v1
+
+          - service: paymentservice
+            context: ./src/paymentservice
+            dockerfile: ./src/paymentservice/Dockerfile
+            tag: paymentservice-v1
+
+          - service: productcatalogservice
+            context: ./src/productcatalogservice
+            dockerfile: ./src/productcatalogservice/Dockerfile
+            tag: productcatalogservice-v1
+
+          - service: recommendationservice
+            context: ./src/recommendationservice
+            dockerfile: ./src/recommendationservice/Dockerfile
+            tag: recommendationservice-v1
+
+          - service: shippingservice
+            context: ./src/shippingservice
+            dockerfile: ./src/shippingservice/Dockerfile
+            tag: shippingservice-v1
+
+          - service: shoppingassistantservice
+            context: ./src/shoppingassistantservice
+            dockerfile: ./src/shoppingassistantservice/Dockerfile
+            tag: shoppingassistantservice-v1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build & Push
+        id: buildAndPushImage
+        uses: MaximilianoBz/dockerhub-buildpush@v1.0
+        with:
+          registry_url: docker.io
+          repository_name: bigchuch/google-microservices      # <— single repo
+          user_name: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          image_version: ${{ matrix.tag }}                    # <— tag per service
+          docker_file: ${{ matrix.dockerfile }}
+          context: ${{ matrix.context }}
+
+      - name: Echo push URL
+        run: echo "Pushed: ${{ steps.buildAndPushImage.outputs.image_pull_url }}"
